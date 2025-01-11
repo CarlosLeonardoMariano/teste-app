@@ -13,6 +13,19 @@ function TarefasFunction() {
   const [horasArray, setHorasArray] = useState([])
 
 
+    // Carregar tarefas e horários do localStorage
+    useEffect(()=> {
+    const tarefasArray = localStorage.getItem('tarefasArray')
+    const horasArray = localStorage.getItem('horasArray')
+    if(tarefasArray){
+      setTarefasArray(JSON.parse(tarefasArray))
+    }
+    if(horasArray){
+      setHorasArray(JSON.parse(horasArray))
+    }
+    }, []);
+
+
 
 
 // Salvar tarefas e horários no localStorage
@@ -42,9 +55,17 @@ function onTarefas(evt){
 
   const horarioRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
 
+  if(!inputTarefas.trim()){
+    toast.info('Preencha o campo tarefa!',{
+  autoClose:1500,
+theme:'colored'
+    });
+    return;
+  }
+
   if(!horarioRegex.test(inputHoras.trim())){
     toast.error("Coloque o horário em formato válido (HH:MM)!",{
-         autoClose:1500
+         autoClose:1500,
     }); 
     return;
 
@@ -52,7 +73,9 @@ function onTarefas(evt){
     toast.success("Tarefa adicionada com sucesso!",{
       autoClose:1500
     });
+  
   };
+
 
   setTarefasArray([...tarefasArray,inputTarefas])
   setHorasArray([...horasArray,inputHoras])
@@ -100,12 +123,16 @@ function onTarefas(evt){
           </li>
         ))}
       </ul>
+
     </div>
   
     <footer className="footer">
       <p>© 2025 Lista de Tarefas. Todos os direitos reservados.</p>
     </footer>
+    <ToastContainer />
+
   </div>
+
   
   );
 }
